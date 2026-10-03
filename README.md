@@ -33,14 +33,15 @@ cp ~/.ssh/your_key ssh/id_rsa
 
 The key must grant access to the remote host as the user specified in `QC_REMOTE_USER`.
 
-**3. Mount the external partition** (Raspberry Pi example)
+**3. Point to your backup directory**
 
-Add to `/etc/fstab`:
+If your external partition is already mounted at `/mnt/data`, use a dedicated subdirectory:
+
 ```
-UUID=your-disk-uuid  /mnt/backups  ext4  defaults,noatime  0  2
+BACKUP_LOCATION=/mnt/data/backups
 ```
 
-Then set `BACKUP_LOCATION=/mnt/backups` in `.env`.
+Docker only mounts this exact path into the container — it has no access to anything else under `/mnt/data`. All script operations (rsync deletes, find prunes, mkdir) are scoped to paths inside this directory.
 
 **4. Start the service**
 
