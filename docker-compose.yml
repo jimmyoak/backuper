@@ -1,0 +1,17 @@
+services:
+  backuper:
+    container_name: backuper
+    build: .
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${BACKUP_LOCATION}:/backups
+      - ./ssh/id_rsa:/root/.ssh/id_rsa:ro
+    env_file:
+      - .env
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
