@@ -7,7 +7,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${BACKUP_LOCATION}:/backups
-      - ./ssh/id_rsa:/root/.ssh/id_rsa:ro
+      - ./ssh/id_rsa:/run/secrets/id_rsa:ro
     env_file:
       - .env
     logging:

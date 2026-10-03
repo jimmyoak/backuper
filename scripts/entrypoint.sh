@@ -5,8 +5,12 @@ mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 touch /root/.ssh/known_hosts
 
-if [ -f /root/.ssh/id_rsa ]; then
+# Copy the key from the read-only mount so we can set correct permissions
+if [ -f /run/secrets/id_rsa ]; then
+  cp /run/secrets/id_rsa /root/.ssh/id_rsa
   chmod 600 /root/.ssh/id_rsa
+else
+  echo "[WARN] No SSH key found at /run/secrets/id_rsa — backups will fail"
 fi
 
 BACKUP_CRON="${BACKUP_CRON:-0 3 * * *}"
