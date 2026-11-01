@@ -70,12 +70,18 @@ docker compose exec backuper /opt/backuper/run-all.sh
 | `QC_DB_USER` | `basic` | Postgres superuser for `pg_dumpall` |
 | `QC_DB_RETENTION_DAYS` | `30` | Days to keep database dumps |
 | `QC_UPLOADS_RETENTION_DAYS` | `30` | Days to keep displaced files in the uploads archive |
+| `PF_REMOTE_HOST` | — | Pirfila host IP or hostname |
+| `PF_REMOTE_USER` | `debian` | SSH user on the remote |
+| `PF_DB_CONTAINER` | `pirfila-pirfila-database-1` | Docker container name for Postgres |
+| `PF_DB_USER` | `pirfila` | Postgres user for `pg_dump` |
+| `PF_DB_NAME` | `pirfila` | Database to dump |
+| `PF_DB_RETENTION_DAYS` | `30` | Days to keep database dumps |
 
 ## Backup layout
 
 ```
 /backups/
-└── quierocambiarlo/
+├── quierocambiarlo/
     ├── database/
     │   ├── dump_2025-01-15_03-00-01.sql.gz
     │   └── dump_2025-01-16_03-00-02.sql.gz
@@ -84,6 +90,9 @@ docker compose exec backuper /opt/backuper/run-all.sh
         └── archive/
             ├── 2025-01-15/   ← files deleted or overwritten on that day
             └── 2025-01-16/
+└── pirfila/
+    └── database/
+        └── dump_2025-01-15_03-00-01.dump   ← pg_dump -Fc (restore with pg_restore)
 ```
 
 ## Adding a new project
