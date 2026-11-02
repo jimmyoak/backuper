@@ -17,13 +17,13 @@ DB_DIR="/backups/pirfila/database"
 mkdir -p "${DB_DIR}"
 
 # ── Database backup ───────────────────────────────────────────────────────────
-# Custom-format pg_dump (-Fc) is already compressed, so no gzip. Restore with pg_restore.
+# Plain SQL dump, gzipped (same format as quierocambiarlo). Restore with: gunzip -c file | psql
 log "pirfila: starting database backup..."
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
-DUMP_FILE="${DB_DIR}/dump_${TIMESTAMP}.dump"
+DUMP_FILE="${DB_DIR}/dump_${TIMESTAMP}.sql.gz"
 
 if ssh ${SSH_OPTS} "${REMOTE_USER}@${REMOTE_HOST}" \
-     "docker exec ${DB_CONTAINER} pg_dump -U ${DB_USER} -Fc ${DB_NAME}" \
+     "docker exec ${DB_CONTAINER} pg_dump -c --if-exists -U ${DB_USER} ${DB_NAME} | gzip" \
      > "${DUMP_FILE}" && [ -s "${DUMP_FILE}" ]; then
   success "pirfila: database dump saved to ${DUMP_FILE}"
 else
@@ -32,7 +32,7 @@ else
   exit 1
 fi
 
-find "${DB_DIR}" -name "dump_*.dump" -mtime +"${DB_RETENTION_DAYS}" -delete
+find "${DB_DIR}" -name "dump_*.sql.gz" -mtime +"${DB_RETENTION_DAYS}" -delete
 log "pirfila: database retention applied (${DB_RETENTION_DAYS} days)"
 
 success "pirfila: all backups completed"

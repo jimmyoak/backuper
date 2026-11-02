@@ -92,7 +92,7 @@ docker compose exec backuper /opt/backuper/run-all.sh
             └── 2025-01-16/
 └── pirfila/
     └── database/
-        └── dump_2025-01-15_03-00-01.dump   ← pg_dump -Fc (restore with pg_restore)
+        └── dump_2025-01-15_03-00-01.sql.gz
 ```
 
 ## Adding a new project
